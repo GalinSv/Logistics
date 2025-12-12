@@ -29,7 +29,7 @@ public class PackageEntity {
     private LocalDate dateOfDelivery;
 
     @Column(name = "toOffice", nullable = false)
-    private Boolean toOffice; // TINYINT(1) -> Boolean
+    private Boolean toOffice;
 
     @ManyToOne
     @JoinColumn(name = "Client_idSender", nullable = false)
