@@ -1,6 +1,8 @@
 package com.project.logistics.controller;
 
-import com.project.logistics.entity.Company;
+import com.project.logistics.data.entity.Company;
+import com.project.logistics.dto.CompanyCreateDto;
+import com.project.logistics.dto.CompanyDto;
 import com.project.logistics.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,22 +17,18 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping
-    public List<Company> getAllCompanies() {
+    public List<CompanyDto> getAll() {
         return companyService.getAll();
     }
 
-    @GetMapping("/{id}")
-    public Company getCompanyById(@PathVariable Integer id) {
-        return companyService.getById(id);
-    }
-
     @PostMapping
-    public Company createCompany(@RequestBody Company company) {
-        return companyService.create(company);
+    public CompanyDto create(@RequestBody CompanyCreateDto dto) {
+        return companyService.create(dto);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCompany(@PathVariable Integer id) {
+    public void delete(@PathVariable Integer id) {
         companyService.delete(id);
     }
 }
+

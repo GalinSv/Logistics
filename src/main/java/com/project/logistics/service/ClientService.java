@@ -1,8 +1,8 @@
 package com.project.logistics.service;
 
 import com.project.logistics.dto.ClientDto;
-import com.project.logistics.entity.Client;
-import com.project.logistics.repository.ClientRepository;
+import com.project.logistics.data.entity.Client;
+import com.project.logistics.data.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

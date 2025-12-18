@@ -1,6 +1,6 @@
-package com.project.logistics.repository;
+package com.project.logistics.data.repository;
 
-import com.project.logistics.entity.PackageEntity;
+import com.project.logistics.data.entity.PackageEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

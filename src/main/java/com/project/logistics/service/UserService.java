@@ -1,8 +1,8 @@
 package com.project.logistics.service;
 
 import com.project.logistics.dto.UserDto;
-import com.project.logistics.entity.User;
-import com.project.logistics.repository.UserRepository;
+import com.project.logistics.data.entity.User;
+import com.project.logistics.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
