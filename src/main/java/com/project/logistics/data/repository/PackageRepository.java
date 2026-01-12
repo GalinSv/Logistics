@@ -7,4 +7,9 @@ import java.util.List;
 
 public interface PackageRepository extends JpaRepository<PackageEntity, Integer> {
     List<PackageEntity> findBySender_IdClient(Integer senderId);
+    List<PackageEntity> findByEmployee_IdEmployee(Integer employeeId);
+    List<PackageEntity> findByDateOfDeliveryIsNull();
+    List<PackageEntity> findByReceiver_IdClientAndDateOfDeliveryIsNotNull(Integer clientId);
+
+
 }

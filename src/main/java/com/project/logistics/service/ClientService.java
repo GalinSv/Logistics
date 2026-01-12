@@ -32,4 +32,5 @@ public class ClientService {
                 .email(user != null ? user.getEmail() : null)
                 .build();
     }
+
 }
