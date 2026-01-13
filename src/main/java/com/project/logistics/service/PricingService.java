@@ -1,8 +1,8 @@
 package com.project.logistics.service;
 
 import com.project.logistics.dto.PricingDto;
-import com.project.logistics.entity.Pricing;
-import com.project.logistics.repository.PricingRepository;
+import com.project.logistics.data.entity.Pricing;
+import com.project.logistics.data.repository.PricingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

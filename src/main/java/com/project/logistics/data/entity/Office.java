@@ -1,4 +1,4 @@
-package com.project.logistics.entity;
+package com.project.logistics.data.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

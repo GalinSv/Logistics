@@ -1,7 +1,7 @@
 package com.project.logistics.service;
 
-import com.project.logistics.entity.Office;
-import com.project.logistics.repository.OfficeRepository;
+import com.project.logistics.data.entity.Office;
+import com.project.logistics.data.repository.OfficeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package com.project.logistics.controller;
 
-import com.project.logistics.entity.Office;
+import com.project.logistics.data.entity.Office;
 import com.project.logistics.service.OfficeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
