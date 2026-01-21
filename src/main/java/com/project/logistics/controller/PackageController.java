@@ -68,7 +68,7 @@ public class PackageController {
     }
 
 
-    @GetMapping("/employee/{employeeId}/revenue")
+    @GetMapping("/employee/revenue/{employeeId}")
     public double getRevenueByEmployee(@PathVariable Integer employeeId) {
         return packageService.getRevenueByEmployee(employeeId);
     }
