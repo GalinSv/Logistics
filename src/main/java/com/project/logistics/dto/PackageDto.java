@@ -11,22 +11,13 @@ import java.time.LocalDate;
 @Builder
 public class PackageDto {
 
-    private Integer id;
+    private Integer idPackage;
+    private Integer idSenderClient;
+    private Integer idReceiverClient;
+    private Integer idEmployee;
     private Double weight;
     private String addressToGo;
-    private LocalDate dateOfDelivery;
     private Boolean toOffice;
-
-    private Integer senderId;
-    private String senderUsername;
-
-    private Integer receiverId;
-    private String receiverUsername;
-
-    private Integer employeeId;
-    private String employeeUsername;
-
-    private Integer pricingId;
-    private Double pricePerKilogram;
-    private Integer pricingToAddress;
+    private LocalDate dateOfDelivery;
+    private Double price;
 }

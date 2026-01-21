@@ -17,31 +17,43 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
 
     @Override
-    public List<CompanyDto> getAll() {
-        return companyRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .toList();
-    }
-
-    @Override
     public CompanyDto create(CompanyCreateDto dto) {
         Company company = Company.builder()
                 .name(dto.getName())
                 .build();
 
-        return toDto(companyRepository.save(company));
+        Company saved = companyRepository.save(company);
+        return mapToDto(saved);
     }
 
     @Override
-    public void delete(Integer id) {
-        companyRepository.deleteById(id);
+    public CompanyDto getById(Integer idCompany) {
+        Company company = companyRepository.findById(idCompany)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        return mapToDto(company);
     }
 
-    private CompanyDto toDto(Company c) {
+    @Override
+    public List<CompanyDto> getAll() {
+        return companyRepository.findAll()
+                .stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    @Override
+    public void delete(Integer idCompany) {
+        if (!companyRepository.existsById(idCompany)) {
+            throw new RuntimeException("Company not found");
+        }
+        companyRepository.deleteById(idCompany);
+    }
+
+    private CompanyDto mapToDto(Company company) {
         return CompanyDto.builder()
-                .id(c.getIdCompany())
-                .name(c.getName())
+                .idCompany(company.getIdCompany())
+                .name(company.getName())
                 .build();
     }
 }

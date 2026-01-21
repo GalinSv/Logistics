@@ -8,25 +8,21 @@ import java.util.List;
 
 public interface PackageService {
 
-    List<PackageDto> getAllPackages();
+    PackageDto create(PackageCreateDto dto);
 
-    List<PackageDto> getPackagesBySender(Integer senderId);
+    PackageDto getById(Integer idPackage);
 
-    PackageDto createPackage(PackageCreateDto dto);
+    List<PackageDto> getAll();
 
-    void deletePackage(Integer id);
+    List<PackageDto> getByEmployee(Integer idEmployee);
 
-    double calculatePackagePrice(Integer packageId);
+    List<PackageDto> getSentByClient(Integer idClient);
 
-    List<PackageDto> getPackagesByEmployee(Integer employeeId);
+    List<PackageDto> getReceivedByClient(Integer idClient);
 
-    List<PackageDto> getUndeliveredPackages();
+    List<PackageDto> getUndelivered();
 
-    List<PackageDto> getReceivedByClient(Integer clientId);
+    PackageDto markDelivered(Integer idPackage);
 
-    double getRevenue(LocalDate from, LocalDate to);
-
-    double getRevenueByEmployee(Integer employeeId);
-
-    List<PackageDto> getPackagesForUser(boolean isEmployee, Integer clientId);
+    void delete(Integer idPackage);
 }

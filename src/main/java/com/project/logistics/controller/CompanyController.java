@@ -10,20 +10,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/companies")
+@RequestMapping("/api/companies")
 @RequiredArgsConstructor
 public class CompanyController {
 
     private final CompanyService companyService;
 
-    @GetMapping
-    public List<CompanyDto> getAll() {
-        return companyService.getAll();
-    }
-
     @PostMapping
     public CompanyDto create(@RequestBody CompanyCreateDto dto) {
         return companyService.create(dto);
+    }
+
+    @GetMapping("/{id}")
+    public CompanyDto get(@PathVariable Integer id) {
+        return companyService.getById(id);
+    }
+
+    @GetMapping
+    public List<CompanyDto> getAll() {
+        return companyService.getAll();
     }
 
     @DeleteMapping("/{id}")

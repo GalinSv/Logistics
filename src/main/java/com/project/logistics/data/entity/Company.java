@@ -3,6 +3,8 @@ package com.project.logistics.data.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "company")
 @Getter
@@ -19,4 +21,10 @@ public class Company {
 
     @Column(name = "name", nullable = false, length = 45)
     private String name;
+
+    @OneToMany(mappedBy = "company")
+    private List<User> users;
+
+    @OneToMany(mappedBy = "company")
+    private List<Office> offices;
 }
