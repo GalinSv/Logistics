@@ -34,4 +34,23 @@ public class UserService {
                 .companyName(user.getCompany() != null ? user.getCompany().getName() : null)
                 .build();
     }
+
+    public User createUserForClient(String phone, String firstName, String lastName) {
+
+        if (userRepository.findByPhone(phone).isPresent()) {
+            throw new IllegalStateException("User with this phone already exists");
+        }
+
+        User user = User.builder()
+                .username("c_" + phone)          // уникално, просто
+                .password("pass123")             // учебно
+                .firstName(firstName)
+                .lastName(lastName)
+                .email("auto_" + phone + "@local")
+                .phone(phone)
+                .build();
+
+        return userRepository.save(user);
+    }
+
 }

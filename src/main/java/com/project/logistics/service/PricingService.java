@@ -25,7 +25,7 @@ public class PricingService {
         return PricingDto.builder()
                 .id(pricing.getIdTransactions())
                 .pricePerKilogram(pricing.getPricePerKilogram())
-                .toAddress(pricing.getToAddress())
+                .price(pricing.getPrice())
                 .build();
     }
 }

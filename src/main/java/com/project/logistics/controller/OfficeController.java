@@ -1,6 +1,6 @@
 package com.project.logistics.controller;
 
-import com.project.logistics.data.entity.Office;
+import com.project.logistics.dto.OfficeDto;
 import com.project.logistics.service.OfficeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -10,17 +10,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/offices")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class OfficeController {
 
     private final OfficeService officeService;
 
     @GetMapping
-    public List<Office> getAllOffices() {
+    public List<OfficeDto> getAll() {
         return officeService.getAll();
-    }
-
-    @PostMapping
-    public Office createOffice(@RequestBody Office office) {
-        return officeService.create(office);
     }
 }

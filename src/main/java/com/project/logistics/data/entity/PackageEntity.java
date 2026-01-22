@@ -43,7 +43,15 @@ public class PackageEntity {
     @JoinColumn(name = "Employee_idEmployee", nullable = false)
     private Employee employee;
 
-    @OneToOne
-    @JoinColumn(name = "Transactions_idTransactions")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "Transactions_idTransactions", nullable = false)
     private Pricing pricing;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private PackageStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "Office_idOffice")
+    private Office office;
 }

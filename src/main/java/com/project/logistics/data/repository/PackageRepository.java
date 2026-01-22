@@ -10,6 +10,6 @@ public interface PackageRepository extends JpaRepository<PackageEntity, Integer>
     List<PackageEntity> findByEmployee_IdEmployee(Integer employeeId);
     List<PackageEntity> findByDateOfDeliveryIsNull();
     List<PackageEntity> findByReceiver_IdClientAndDateOfDeliveryIsNotNull(Integer clientId);
-
+    List<PackageEntity> findBySender_IdClientOrReceiver_IdClient(Integer senderId, Integer receiverId);
 
 }

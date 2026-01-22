@@ -1,18 +1,13 @@
 package com.project.logistics.service;
+
+import com.project.logistics.data.entity.*;
+import com.project.logistics.data.repository.*;
 import com.project.logistics.dto.PackageCreateDto;
-import com.project.logistics.data.entity.Client;
-import com.project.logistics.data.entity.Employee;
-import com.project.logistics.data.entity.Pricing;
-import com.project.logistics.data.repository.ClientRepository;
-import com.project.logistics.data.repository.EmployeeRepository;
-import com.project.logistics.data.repository.PricingRepository;
 import com.project.logistics.dto.PackageDto;
-import com.project.logistics.data.entity.PackageEntity;
-import com.project.logistics.data.repository.PackageRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.stereotype.Service;
 import com.project.logistics.exception.NotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,19 +20,32 @@ public class PackageService {
     private final ClientRepository clientRepository;
     private final EmployeeRepository employeeRepository;
     private final PricingRepository pricingRepository;
+    private final OfficeRepository officeRepository;
+
     public List<PackageDto> getAllPackages() {
-        return packageRepository.findAll()
-                .stream()
-                .map(this::mapToDto)
-                .toList();
+        return packageRepository.findAll().stream().map(this::mapToDto).toList();
     }
 
     private PackageDto mapToDto(PackageEntity p) {
-
         var sender = p.getSender();
         var receiver = p.getReceiver();
         var employee = p.getEmployee();
         var pricing = p.getPricing();
+        var office = p.getOffice();
+
+        var senderUser = sender != null ? sender.getUser() : null;
+        var receiverUser = receiver != null ? receiver.getUser() : null;
+
+        String senderFullName =
+                senderUser != null ? senderUser.getFirstName() + " " + senderUser.getLastName() : null;
+
+        String receiverFullName =
+                receiverUser != null ? receiverUser.getFirstName() + " " + receiverUser.getLastName() : null;
+
+        String employeeFullName =
+                employee != null && employee.getUser() != null
+                        ? employee.getUser().getFirstName() + " " + employee.getUser().getLastName()
+                        : null;
 
         return PackageDto.builder()
                 .id(p.getIdPackage())
@@ -47,28 +55,36 @@ public class PackageService {
                 .toOffice(p.getToOffice())
 
                 .senderId(sender != null ? sender.getIdClient() : null)
-                .senderUsername(sender != null && sender.getUser() != null ? sender.getUser().getUsername() : null)
+                .senderUsername(senderUser != null ? senderUser.getUsername() : null)
 
                 .receiverId(receiver != null ? receiver.getIdClient() : null)
-                .receiverUsername(receiver != null && receiver.getUser() != null ? receiver.getUser().getUsername() : null)
+                .receiverUsername(receiverUser != null ? receiverUser.getUsername() : null)
 
                 .employeeId(employee != null ? employee.getIdEmployee() : null)
                 .employeeUsername(employee != null && employee.getUser() != null ? employee.getUser().getUsername() : null)
+                .employeeFullName(employeeFullName)
 
                 .pricingId(pricing != null ? pricing.getIdTransactions() : null)
                 .pricePerKilogram(pricing != null ? pricing.getPricePerKilogram() : null)
-                .pricingToAddress(pricing != null ? pricing.getToAddress() : null)
+                .pricingToAddress(p.getToOffice() != null ? (p.getToOffice() ? 0 : 1) : null)
+
+
+                .status(p.getStatus() == null ? "CREATED" : p.getStatus().name())
+
+                .senderFullName(senderFullName)
+                .receiverFullName(receiverFullName)
+
+                .officeId(office != null ? office.getIdOffice() : null)
+                .officeAddress(office != null ? office.getAddress() : null)
+
                 .build();
     }
 
     public List<PackageDto> getPackagesBySender(Integer senderId) {
-        return packageRepository.findBySender_IdClient(senderId)
-                .stream()
-                .map(this::mapToDto)
-                .toList();
+        return packageRepository.findBySender_IdClient(senderId).stream().map(this::mapToDto).toList();
     }
-    public PackageDto createPackage(PackageCreateDto dto) {
 
+    public PackageDto createPackage(PackageCreateDto dto) {
         Client sender = clientRepository.findById(dto.getSenderClientId())
                 .orElseThrow(() -> new NotFoundException("Sender not found: " + dto.getSenderClientId()));
 
@@ -81,94 +97,85 @@ public class PackageService {
         Pricing pricing = pricingRepository.findById(dto.getPricingId())
                 .orElseThrow(() -> new NotFoundException("Pricing not found: " + dto.getPricingId()));
 
+        Office office = null;
+        if (Boolean.TRUE.equals(dto.getToOffice())) {
+            if (dto.getOfficeId() == null) {
+                throw new IllegalArgumentException("officeId is required when toOffice = true");
+            }
+            office = officeRepository.findById(dto.getOfficeId())
+                    .orElseThrow(() -> new NotFoundException("Office not found: " + dto.getOfficeId()));
+        }
 
-                        PackageEntity pkg = PackageEntity.builder()
+        String addressToGo = Boolean.TRUE.equals(dto.getToOffice()) ? null : dto.getDeliveryAddress();
+
+        PackageEntity pkg = PackageEntity.builder()
                 .weight(dto.getWeight())
-                .addressToGo(dto.getDeliveryAddress())
                 .toOffice(dto.getToOffice())
+                .addressToGo(addressToGo)
                 .sender(sender)
                 .receiver(receiver)
                 .employee(employee)
                 .pricing(pricing)
+                .office(office)
+                .status(PackageStatus.CREATED)
                 .build();
 
         return mapToDto(packageRepository.save(pkg));
     }
+
     public void deletePackage(Integer id) {
-        if (!packageRepository.existsById(id)) {
-            throw new NotFoundException("Package not found: " + id);
-        }
+        if (!packageRepository.existsById(id)) throw new NotFoundException("Package not found: " + id);
         packageRepository.deleteById(id);
     }
+
     public double calculatePackagePrice(Integer packageId) {
         PackageEntity pkg = packageRepository.findById(packageId)
                 .orElseThrow(() -> new NotFoundException("Package not found: " + packageId));
-
         return calculatePackagePrice(pkg);
     }
 
-
     private double calculatePackagePrice(PackageEntity p) {
         double basePrice = p.getWeight() * p.getPricing().getPricePerKilogram();
-
-        if (!p.getToOffice()) {
-            basePrice += p.getPricing().getToAddress();
-        }
-
+        if (Boolean.FALSE.equals(p.getToOffice())) basePrice += 1;
         return basePrice;
     }
 
-    public List<PackageDto> getPackagesByEmployee(Integer employeeId) {
-        return packageRepository.findByEmployee_IdEmployee(employeeId)
-                .stream()
-                .map(this::mapToDto)
-                .toList();
-    }
     public List<PackageDto> getUndeliveredPackages() {
-        return packageRepository.findByDateOfDeliveryIsNull()
-                .stream()
-                .map(this::mapToDto)
-                .toList();
+        return packageRepository.findByDateOfDeliveryIsNull().stream().map(this::mapToDto).toList();
     }
+
     public List<PackageDto> getReceivedByClient(Integer clientId) {
-        return packageRepository
-                .findByReceiver_IdClientAndDateOfDeliveryIsNotNull(clientId)
-                .stream()
-                .map(this::mapToDto)
-                .toList();
+        return packageRepository.findByReceiver_IdClientAndDateOfDeliveryIsNotNull(clientId)
+                .stream().map(this::mapToDto).toList();
     }
+
     public double getRevenue(LocalDate from, LocalDate to) {
         return packageRepository.findAll().stream()
                 .filter(p -> p.getDateOfDelivery() != null)
-                .filter(p -> !p.getDateOfDelivery().isBefore(from)
-                        && !p.getDateOfDelivery().isAfter(to))
+                .filter(p -> !p.getDateOfDelivery().isBefore(from) && !p.getDateOfDelivery().isAfter(to))
                 .mapToDouble(this::calculatePackagePrice)
                 .sum();
     }
 
-    public double getRevenueByEmployee(Integer employeeId) {
-        return packageRepository.findByEmployee_IdEmployee(employeeId).stream()
-                .filter(p -> p.getDateOfDelivery() != null)
-                .mapToDouble(this::calculatePackagePrice)
-                .sum();
-    }
-    public List<PackageDto> getPackagesForUser(
-            boolean isEmployee,
-            Integer clientId
-    ) {
-        if (isEmployee) {
-            return getAllPackages();
+    @Transactional
+    public PackageDto updateStatus(Integer id, String status) {
+        PackageEntity pkg = packageRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Package not found"));
+
+        PackageStatus newStatus = PackageStatus.valueOf(status.toUpperCase());
+
+        if (pkg.getStatus() == PackageStatus.CANCELLED || pkg.getStatus() == PackageStatus.DELIVERED) {
+            throw new RuntimeException("Cannot change status of DELIVERED/CANCELLED package");
         }
 
-        List<PackageDto> sent = getPackagesBySender(clientId);
-        List<PackageDto> received = getReceivedByClient(clientId);
+        pkg.setStatus(newStatus);
+        if (newStatus == PackageStatus.DELIVERED) pkg.setDateOfDelivery(LocalDate.now());
 
-        return java.util.stream.Stream
-                .concat(sent.stream(), received.stream())
-                .distinct()
-                .toList();
+        return mapToDto(packageRepository.save(pkg));
     }
 
-
-
+    public List<PackageDto> getAllPackagesForClient(Integer clientId) {
+        return packageRepository.findBySender_IdClientOrReceiver_IdClient(clientId, clientId)
+                .stream().map(this::mapToDto).toList();
+    }
 }

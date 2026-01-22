@@ -11,5 +11,5 @@ public class PricingDto {
 
     private Integer id;
     private Double pricePerKilogram;
-    private Integer toAddress;
+    private Double price;
 }

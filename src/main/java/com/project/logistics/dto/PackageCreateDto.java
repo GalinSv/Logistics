@@ -15,6 +15,8 @@ public class PackageCreateDto {
 
     private Integer senderClientId;
     private Integer receiverClientId;
-    private Integer employeeId;
     private Integer pricingId;
+
+    private Integer officeId;   // nullable
+    private Integer employeeId; // ✅ добавено
 }

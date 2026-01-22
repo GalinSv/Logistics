@@ -2,6 +2,7 @@ package com.project.logistics.service;
 
 import com.project.logistics.data.entity.Office;
 import com.project.logistics.data.repository.OfficeRepository;
+import com.project.logistics.dto.OfficeDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,19 @@ public class OfficeService {
 
     private final OfficeRepository officeRepository;
 
-    public List<Office> getAll() {
-        return officeRepository.findAll();
+    public List<OfficeDto> getAll() {
+        return officeRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
-    public Office create(Office office) {
-        return officeRepository.save(office);
+    private OfficeDto toDto(Office o) {
+        return OfficeDto.builder()
+                .id(o.getIdOffice())
+                .address(o.getAddress())
+                .companyId(o.getCompany() != null ? o.getCompany().getIdCompany() : null)
+                .companyName(o.getCompany() != null ? o.getCompany().getName() : null)
+                .build();
     }
 }

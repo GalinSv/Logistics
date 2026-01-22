@@ -1,11 +1,10 @@
 package com.project.logistics.controller;
 
+import com.project.logistics.dto.ClientCreateDto;
 import com.project.logistics.dto.ClientDto;
 import com.project.logistics.service.ClientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,5 +18,15 @@ public class ClientController {
     @GetMapping
     public List<ClientDto> getAllClients() {
         return clientService.getAllClients();
+    }
+
+    @GetMapping("/lookup")
+    public ClientDto lookupByPhone(@RequestParam String phone) {
+        return clientService.lookupByPhone(phone);
+    }
+
+    @PostMapping
+    public ClientDto create(@RequestBody ClientCreateDto dto) {
+        return clientService.createClient(dto);
     }
 }

@@ -20,9 +20,6 @@ public class Pricing {
     @Column(name = "pricePerKilogram", nullable = false)
     private Double pricePerKilogram;
 
-    @Column(name = "toAddress", nullable = false)
-    private Integer toAddress; // 0/1 или друго числово кодиране
-
-    @OneToOne(mappedBy = "pricing")
-    private PackageEntity aPackage;
+    @Column(name = "price")
+    private Double price;
 }
