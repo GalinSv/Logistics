@@ -49,4 +49,7 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Client client;
+
+    @Column(name = "phone", length = 20, unique = true)
+    private String phone;
 }

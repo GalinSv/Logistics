@@ -44,6 +44,7 @@ public class PackageServiceImpl implements PackageService {
                 .addressToGo(dto.getAddressToGo())
                 .toOffice(dto.getToOffice())
                 .pricing(pricing)
+                .status(PackageStatus.CREATED)
                 .build();
 
         Package saved = packageRepository.save(pkg);
