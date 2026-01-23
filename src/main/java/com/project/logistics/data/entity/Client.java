@@ -3,6 +3,8 @@ package com.project.logistics.data.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "client")
 @Getter
@@ -17,8 +19,13 @@ public class Client {
     @Column(name = "idClient")
     private Integer idClient;
 
-    // CHILD → owns the FK column User_idUser
     @OneToOne
     @JoinColumn(name = "User_idUser", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "sender")
+    private List<Package> sentPackages;
+
+    @OneToMany(mappedBy = "receiver")
+    private List<Package> receivedPackages;
 }

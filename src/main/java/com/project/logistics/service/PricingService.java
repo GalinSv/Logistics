@@ -1,31 +1,15 @@
 package com.project.logistics.service;
 
-import com.project.logistics.dto.PricingDto;
 import com.project.logistics.data.entity.Pricing;
-import com.project.logistics.data.repository.PricingRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.project.logistics.dto.PricingDto;
+import com.project.logistics.dto.RevenueDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class PricingService {
+public interface PricingService {
 
-    private final PricingRepository pricingRepository;
+    Pricing createPricing(Double weight, Boolean toOffice);
 
-    public List<PricingDto> getAllPricing() {
-        return pricingRepository.findAll()
-                .stream()
-                .map(this::mapToDto)
-                .toList();
-    }
-
-    private PricingDto mapToDto(Pricing pricing) {
-        return PricingDto.builder()
-                .id(pricing.getIdTransactions())
-                .pricePerKilogram(pricing.getPricePerKilogram())
-                .price(pricing.getPrice())
-                .build();
-    }
+    RevenueDto getRevenue(LocalDate from, LocalDate to);
 }

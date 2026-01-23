@@ -1,15 +1,17 @@
 package com.project.logistics.data.repository;
 
-import com.project.logistics.data.entity.PackageEntity;
+import com.project.logistics.data.entity.Package;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PackageRepository extends JpaRepository<PackageEntity, Integer> {
-    List<PackageEntity> findBySender_IdClient(Integer senderId);
-    List<PackageEntity> findByEmployee_IdEmployee(Integer employeeId);
-    List<PackageEntity> findByDateOfDeliveryIsNull();
-    List<PackageEntity> findByReceiver_IdClientAndDateOfDeliveryIsNotNull(Integer clientId);
-    List<PackageEntity> findBySender_IdClientOrReceiver_IdClient(Integer senderId, Integer receiverId);
+public interface PackageRepository extends JpaRepository<Package, Integer> {
+    List<Package> findBySender_IdClient(Integer senderId);
+    List<Package> findByEmployee_IdEmployee(Integer idEmployee);
+    List<Package> findByDateOfDeliveryIsNull();
+    List<Package> findByReceiver_IdClientAndDateOfDeliveryIsNotNull(Integer clientId);
+    List<Package> findByReceiver_IdClient(Integer idClient);
+
+
 
 }

@@ -9,15 +9,9 @@ import lombok.*;
 @Builder
 public class EmployeeDto {
 
-    private Integer id;
+    private Integer idEmployee;
+    private Integer idUser;
+    private Integer idCompany;
+    private Integer idOffice;
     private Byte typeOfEmpl;
-
-    private Integer userId;
-    private String username;
-
-    private Integer companyId;
-    private String companyName;
-
-    private Integer officeId;
-    private String officeAddress;
 }

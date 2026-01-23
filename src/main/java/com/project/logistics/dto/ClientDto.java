@@ -9,12 +9,6 @@ import lombok.*;
 @Builder
 public class ClientDto {
 
-    private Integer id;
-
-    private Integer userId;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
+    private Integer idClient;
+    private Integer idUser;
 }

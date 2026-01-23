@@ -9,24 +9,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping("/api/clients")
 @RequiredArgsConstructor
 public class ClientController {
 
     private final ClientService clientService;
 
-    @GetMapping
-    public List<ClientDto> getAllClients() {
-        return clientService.getAllClients();
-    }
-
-    @GetMapping("/lookup")
-    public ClientDto lookupByPhone(@RequestParam String phone) {
-        return clientService.lookupByPhone(phone);
-    }
-
     @PostMapping
     public ClientDto create(@RequestBody ClientCreateDto dto) {
-        return clientService.createClient(dto);
+        return clientService.create(dto);
+    }
+
+    @GetMapping("/{id}")
+    public ClientDto get(@PathVariable Integer id) {
+        return clientService.getById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Integer id) {
+        clientService.delete(id);
     }
 }

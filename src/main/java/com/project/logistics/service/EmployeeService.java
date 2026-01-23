@@ -1,36 +1,18 @@
 package com.project.logistics.service;
 
+import com.project.logistics.dto.EmployeeCreateDto;
 import com.project.logistics.dto.EmployeeDto;
-import com.project.logistics.data.entity.Employee;
-import com.project.logistics.data.repository.EmployeeRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.project.logistics.dto.PackageDto;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class EmployeeService {
+public interface EmployeeService {
 
-    private final EmployeeRepository employeeRepository;
+    EmployeeDto create(EmployeeCreateDto dto);
 
-    public List<EmployeeDto> getAllEmployees() {
-        return employeeRepository.findAll()
-                .stream()
-                .map(this::mapToDto)
-                .toList();
-    }
+    EmployeeDto getById(Integer idEmployee);
 
-    private EmployeeDto mapToDto(Employee employee) {
-        return EmployeeDto.builder()
-                .id(employee.getIdEmployee())
-                .typeOfEmpl(employee.getTypeOfEmpl())
-                .userId(employee.getUser() != null ? employee.getUser().getIdUser() : null)
-                .username(employee.getUser() != null ? employee.getUser().getUsername() : null)
-                .companyId(employee.getCompany() != null ? employee.getCompany().getIdCompany() : null)
-                .companyName(employee.getCompany() != null ? employee.getCompany().getName() : null)
-                .officeId(employee.getOffice() != null ? employee.getOffice().getIdOffice() : null)
-                .officeAddress(employee.getOffice() != null ? employee.getOffice().getAddress() : null)
-                .build();
-    }
+    List<EmployeeDto> getAll();
+
+    void delete(Integer idEmployee);
 }

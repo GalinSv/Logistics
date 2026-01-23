@@ -9,14 +9,10 @@ import lombok.*;
 @Builder
 public class PackageCreateDto {
 
+    private Integer idSenderClient;
+    private Integer idReceiverClient;
+    private Integer idEmployee;
     private Double weight;
+    private String addressToGo;
     private Boolean toOffice;
-    private String deliveryAddress;
-
-    private Integer senderClientId;
-    private Integer receiverClientId;
-    private Integer pricingId;
-
-    private Integer officeId;   // nullable
-    private Integer employeeId; // ✅ добавено
 }

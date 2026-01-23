@@ -1,32 +1,20 @@
 package com.project.logistics.service;
 
 import com.project.logistics.data.entity.Office;
-import com.project.logistics.data.repository.OfficeRepository;
+import com.project.logistics.dto.OfficeCreateDto;
 import com.project.logistics.dto.OfficeDto;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class OfficeService {
+public interface OfficeService {
 
-    private final OfficeRepository officeRepository;
+    OfficeDto create(OfficeCreateDto dto);
 
-    public List<OfficeDto> getAll() {
-        return officeRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .toList();
-    }
+    OfficeDto getById(Integer idOffice);
 
-    private OfficeDto toDto(Office o) {
-        return OfficeDto.builder()
-                .id(o.getIdOffice())
-                .address(o.getAddress())
-                .companyId(o.getCompany() != null ? o.getCompany().getIdCompany() : null)
-                .companyName(o.getCompany() != null ? o.getCompany().getName() : null)
-                .build();
-    }
+    List<OfficeDto> getByCompany(Integer idCompany);
+
+    List<OfficeDto> getAll();
+
+    void delete(Integer idOffice);
 }

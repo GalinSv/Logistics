@@ -11,14 +11,10 @@ import java.time.LocalDate;
 @Builder
 public class UserDto {
 
-    private Integer id;
+    private Integer idUser;
     private String username;
     private String firstName;
     private String lastName;
     private String email;
-    private String address;
-    private LocalDate dateOfBirth;
-
-    private Integer companyId;
-    private String companyName;
+    private Integer idCompany;
 }

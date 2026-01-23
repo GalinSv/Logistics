@@ -8,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ClientCreateDto {
-    private String phone;
-    private String firstName;
-    private String lastName;
+
+    private Integer idUser;
 }

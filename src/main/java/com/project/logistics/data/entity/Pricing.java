@@ -3,6 +3,8 @@ package com.project.logistics.data.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "pricing")
 @Getter
@@ -17,9 +19,13 @@ public class Pricing {
     @Column(name = "idTransactions")
     private Integer idTransactions;
 
-    @Column(name = "pricePerKilogram", nullable = false)
+
+    @Column(name = "pricePerKilogram")
     private Double pricePerKilogram;
 
     @Column(name = "price")
     private Double price;
+
+    @OneToOne(mappedBy = "pricing")
+    private Package aPackage;
 }

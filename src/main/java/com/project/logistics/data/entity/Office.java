@@ -3,6 +3,8 @@ package com.project.logistics.data.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "office")
 @Getter
@@ -23,4 +25,7 @@ public class Office {
     @ManyToOne
     @JoinColumn(name = "Company_idCompany", nullable = false)
     private Company company;
+
+    @OneToMany(mappedBy = "office")
+    private List<Employee> employees;
 }
