@@ -1,25 +1,15 @@
 export type PackageDto = {
-  id: number;
+  idPackage: number;
+  idSenderClient: number;
+  idReceiverClient: number;
+  idEmployee: number;
   weight: number;
   addressToGo: string | null;
-  dateOfDelivery: string | null; // ISO string от backend-а
   toOffice: boolean;
-
-  senderId: number;
-  senderUsername: string;
-  receiverId: number;
-  receiverUsername: string;
-
-  employeeId: number;
-  employeeUsername: string;
-
-  pricingId: number;
-  pricePerKilogram: number;
-  pricingToAddress: number;
-
-  status?: "CREATED" | "IN_TRANSIT" | "AT_OFFICE" | "DELIVERED" | "CANCELLED";
-
+  dateOfDelivery: string | null; // идва като "2026-01-05"
+  price: number | null;
 };
+
 export type ClientDto = {
   id: number;
   userId: number;
