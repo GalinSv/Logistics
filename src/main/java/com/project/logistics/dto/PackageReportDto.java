@@ -18,8 +18,8 @@ public class PackageReportDto {
     private String receiverPhone;
     private String employeePhone;
 
-    private Double weight;   // <-- POSITION 5
-    private Double price;    // <-- POSITION 6
+    private Double weight;
+    private Double price;
 
     private Boolean toOffice;
 
