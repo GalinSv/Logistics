@@ -22,7 +22,6 @@ export default function ClientDashboardPage() {
     return <Navigate to="/" replace />;
   }
 
-  // ✅ FIX: clientId винаги number
   const clientId = Number(auth.clientId);
 
   const [items, setItems] = useState<PackageDto[]>([]);
@@ -37,20 +36,21 @@ export default function ClientDashboardPage() {
         setLoading(true);
         setErr(null);
 
-        // ✅ ползваме Vite proxy → без CORS
         const res = await fetch("/api/packages");
         if (!res.ok) throw new Error("Failed to load packages");
 
         const data: PackageDto[] = await res.json();
 
-        // ✅ само пратките на този client
         const mine = data.filter(
           (p) =>
             p.idSenderClient === clientId ||
             p.idReceiverClient === clientId
         );
 
-        if (!cancelled) setItems(mine);
+        if (!cancelled) {
+          // newest first
+          setItems(mine.sort((a, b) => b.idPackage - a.idPackage));
+        }
       } catch (e: any) {
         if (!cancelled) setErr(e?.message ?? "Error loading packages");
       } finally {
@@ -63,16 +63,15 @@ export default function ClientDashboardPage() {
     };
   }, [clientId]);
 
+  const status = (p: PackageDto) =>
+    p.dateOfDelivery ? "DELIVERED" : "CREATED";
+
   return (
-    <div style={{ padding: 20 }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+    <div style={{ padding: 32 }}>
+      {/* HEADER */}
+      <div className="page-header">
         <h2>My Packages</h2>
+
         <button
           onClick={() => {
             clearAuth();
@@ -87,55 +86,60 @@ export default function ClientDashboardPage() {
       {err && <p style={{ color: "crimson" }}>{err}</p>}
 
       {!loading && !err && (
-        <table
-          cellPadding={8}
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            marginTop: 12,
-          }}
-        >
-          <thead>
-            <tr style={{ textAlign: "left", borderBottom: "1px solid #ccc" }}>
-              <th>ID</th>
-              <th>Type</th>
-              <th>Weight</th>
-              <th>To Office</th>
-              <th>Address</th>
-              <th>Delivery Date</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div className="grid">
             {items.map((p) => {
               const type =
                 p.idSenderClient === clientId ? "Sent" : "Received";
 
               return (
-                <tr
-                  key={p.idPackage}
-                  style={{ borderBottom: "1px solid #eee" }}
-                >
-                  <td>{p.idPackage}</td>
-                  <td>{type}</td>
-                  <td>{p.weight}</td>
-                  <td>{p.toOffice ? "Yes" : "No"}</td>
-                  <td>{p.addressToGo ?? "-"}</td>
-                  <td>{p.dateOfDelivery ?? "-"}</td>
-                  <td>{p.price ?? "-"}</td>
-                </tr>
+                <div key={p.idPackage} className="card">
+                  <div className="card-header">
+                    <strong>Package #{p.idPackage}</strong>
+
+                    <span className={`status ${status(p)}`}>
+                      {status(p)}
+                    </span>
+                  </div>
+
+                  <div className="card-address">
+                    {p.toOffice
+                      ? "Delivered to office"
+                      : p.addressToGo ?? "-"}
+                  </div>
+
+                  <div className="card-grid">
+                    <div><b>Type</b></div>
+                    <div
+                      style={{
+                        color:
+                          type === "Sent" ? "#5b6cff" : "#0f9d58",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {type}
+                    </div>
+
+                    <div><b>Weight</b></div>
+                    <div>{p.weight} kg</div>
+
+                    <div><b>Price</b></div>
+                    <div>{p.price ?? "-"} лв</div>
+
+                    <div><b>Delivered</b></div>
+                    <div>{p.dateOfDelivery ?? "-"}</div>
+                  </div>
+                </div>
               );
             })}
 
             {items.length === 0 && (
-              <tr>
-                <td colSpan={7} style={{ padding: 12, opacity: 0.7 }}>
-                  No packages found.
-                </td>
-              </tr>
+              <div className="card" style={{ opacity: 0.7 }}>
+                No packages found.
+              </div>
             )}
-          </tbody>
-        </table>
+          </div>
+        </div>
       )}
     </div>
   );
