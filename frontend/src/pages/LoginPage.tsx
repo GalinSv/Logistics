@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { setAuth } from "../lib/auth";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import {getAuth, setAuth} from "../lib/auth";
 
 type LoginResponse = {
   role: "CLIENT" | "EMPLOYEE" | "ADMIN";
@@ -62,6 +62,9 @@ export default function LoginPage() {
     }
   }
 
+  const auth = getAuth();
+  const isAdmin = auth?.role === "ADMIN";
+
   return (
     <div style={{ padding: 20, maxWidth: 520 }}>
       <h2>Login ({userType})</h2>
@@ -82,6 +85,20 @@ export default function LoginPage() {
         <button disabled={loading}>
           {loading ? "Signing in..." : "Login"}
         </button>
+
+          {userType === "CLIENT" && (
+              <Link to="/register" style={{ textDecoration: "none" }}>
+                  <button type="button">Register (Client)</button>
+              </Link>
+          )}
+
+          {/*only admins should register*/}
+          {isAdmin && (
+              <Link to="/admin/register-employee" style={{ textDecoration: "none" }}>
+                  <button type="button">Register Employee (Admin)</button>
+              </Link>
+          )}
+
 
         {err && <div style={{ color: "crimson" }}>{err}</div>}
       </form>
