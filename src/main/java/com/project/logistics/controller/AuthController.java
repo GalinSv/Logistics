@@ -1,30 +1,14 @@
-//package com.project.logistics.controller;
-//
-//import com.project.logistics.dto.LoginRequest;
-//import com.project.logistics.dto.LoginResponse;
-//import com.project.logistics.service.AuthService;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.web.bind.annotation.*;
-////TODO
-//@RestController
-//@RequestMapping("/auth")
-//@RequiredArgsConstructor
-//public class AuthController {
-//
-//    private final AuthService authService;
-//
-//    @PostMapping("/login")
-//    public LoginResponse login(@RequestBody LoginRequest request) {
-//        return authService.login(request);
-//    }
-//}
 package com.project.logistics.controller;
-
+import com.project.logistics.data.entity.Client;
+import com.project.logistics.data.repository.ClientRepository;
+import com.project.logistics.data.repository.EmployeeRepository;
 import com.project.logistics.data.entity.Employee;
 import com.project.logistics.data.entity.User;
 import com.project.logistics.data.repository.UserRepository;
 import com.project.logistics.dto.LoginRequestDto;
 import com.project.logistics.dto.LoginResponseDto;
+import com.project.logistics.dto.RegisterClientRequestDto;
+import com.project.logistics.dto.RegisterEmployeeRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +17,12 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:5173"})
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 public class AuthController {
 
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
+    private final EmployeeRepository employeeRepository;
 
     @PostMapping("/login")
     public LoginResponseDto login(@RequestBody LoginRequestDto req) {
@@ -44,7 +30,6 @@ public class AuthController {
         User user = userRepository.findByUsername(req.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password"));
 
-        // plain-text passwords (както е при вас в БД)
         if (user.getPassword() == null || !user.getPassword().equals(req.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
@@ -87,4 +72,7 @@ public class AuthController {
 
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "userType must be CLIENT or EMPLOYEE");
     }
+
+
+
 }
