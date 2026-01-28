@@ -20,4 +20,6 @@ public class PackageDto {
     private Boolean toOffice;
     private LocalDate dateOfDelivery;
     private Double price;
+    private Integer officeId;
+    private String officeAddress;
 }

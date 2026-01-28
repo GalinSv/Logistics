@@ -1,6 +1,5 @@
 package com.project.logistics.controller;
 
-import com.project.logistics.data.entity.Office;
 import com.project.logistics.dto.OfficeCreateDto;
 import com.project.logistics.dto.OfficeDto;
 import com.project.logistics.service.OfficeService;
@@ -29,6 +28,11 @@ public class OfficeController {
     @GetMapping
     public List<OfficeDto> getAll() {
         return officeService.getAll();
+    }
+
+    @GetMapping("/by-company")
+    public List<OfficeDto> getByCompany(@RequestParam Integer companyId) {
+        return officeService.getByCompany(companyId);
     }
 
     @DeleteMapping("/{id}")

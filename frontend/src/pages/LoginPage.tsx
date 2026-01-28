@@ -32,7 +32,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8080/api/auth/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userType, username, password }),
@@ -44,6 +44,7 @@ export default function LoginPage() {
       }
 
       const data = (await res.json()) as LoginResponse;
+
       setAuth({
         username: data.username,
         role: data.role,
@@ -63,28 +64,56 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ padding: 20, maxWidth: 520 }}>
-      <h2>Login ({userType})</h2>
-
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
-        <input
-          placeholder="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          placeholder="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button disabled={loading}>
-          {loading ? "Signing in..." : "Login"}
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <div className="card" style={{ width: 380 }}>
+        {/* BACK */}
+        <button
+          onClick={() => nav("/")}
+          style={{
+            marginBottom: 12,
+            padding: 0,
+            border: "none",
+            background: "transparent",
+            color: "#5b6cff",
+            cursor: "pointer",
+            fontWeight: 600,
+          }}
+        >
+          ← Back
         </button>
 
-        {err && <div style={{ color: "crimson" }}>{err}</div>}
-      </form>
+        <h2 style={{ marginTop: 0, marginBottom: 16 }}>
+          Login as {userType === "CLIENT" ? "Client" : "Employee"}
+        </h2>
+
+        <form onSubmit={onSubmit} style={{ display: "grid", gap: 14 }}>
+          <input
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+
+          <input
+            placeholder="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <button disabled={loading}>
+            {loading ? "Signing in…" : "Login"}
+          </button>
+
+          {err && <div style={{ color: "crimson" }}>{err}</div>}
+        </form>
+      </div>
     </div>
   );
 }
