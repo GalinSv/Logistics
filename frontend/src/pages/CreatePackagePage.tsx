@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import { getAuth } from "../lib/auth";
 import type { PackageDto } from "../types";
+
+
+type OfficeDto = {
+  idOffice: number;
+  address: string;
+  idCompany: number;
+};
 
 type CreateForm = {
   senderClientId: number;
@@ -9,7 +16,10 @@ type CreateForm = {
   weight: number;
   toOffice: boolean;
   addressToGo: string | null;
+  officeId?: number;
 };
+
+
 
 export default function CreatePackagePage() {
   const [form, setForm] = useState<CreateForm>({
@@ -18,10 +28,36 @@ export default function CreatePackagePage() {
     weight: 1,
     toOffice: false,
     addressToGo: "",
+    officeId: undefined,
   });
 
+  const [offices, setOffices] = useState<OfficeDto[]>([]);
+  const [loadingOffices, setLoadingOffices] = useState(false);
   const [error, setError] = useState("");
   const [created, setCreated] = useState<PackageDto | null>(null);
+
+
+  useEffect(() => {
+    if (!form.toOffice) {
+      setOffices([]);
+      setForm((f) => ({ ...f, officeId: undefined }));
+      return;
+    }
+
+    const loadOffices = async () => {
+      try {
+        setLoadingOffices(true);
+        const res = await api.get<OfficeDto[]>("/offices");
+        setOffices(res.data);
+      } catch {
+        setError("Failed to load offices");
+      } finally {
+        setLoadingOffices(false);
+      }
+    };
+
+    loadOffices();
+  }, [form.toOffice]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +70,11 @@ export default function CreatePackagePage() {
       return;
     }
 
+    if (form.toOffice && !form.officeId) {
+      setError("Please select an office");
+      return;
+    }
+
     try {
       const payload = {
         idSenderClient: form.senderClientId,
@@ -42,6 +83,7 @@ export default function CreatePackagePage() {
         weight: form.weight,
         toOffice: form.toOffice,
         addressToGo: form.toOffice ? null : form.addressToGo,
+        idOffice: form.toOffice ? form.officeId : null,
       };
 
       console.log("CREATE PACKAGE PAYLOAD:", payload);
@@ -49,9 +91,14 @@ export default function CreatePackagePage() {
       const res = await api.post<PackageDto>("/packages", payload);
       setCreated(res.data);
     } catch (err: any) {
-      setError(err?.response?.data?.message || err?.message || "Create failed");
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Create package failed"
+      );
     }
   };
+
 
   return (
     <div style={{ marginTop: 20 }}>
@@ -59,14 +106,20 @@ export default function CreatePackagePage() {
 
       {error && <p style={{ color: "crimson" }}>{error}</p>}
 
-      <form onSubmit={submit} style={{ display: "grid", gap: 12, maxWidth: 420 }}>
+      <form
+        onSubmit={submit}
+        style={{ display: "grid", gap: 12, maxWidth: 420 }}
+      >
         <label>
           Sender client ID
           <input
             type="number"
             value={form.senderClientId}
             onChange={(e) =>
-              setForm((f) => ({ ...f, senderClientId: Number(e.target.value) }))
+              setForm((f) => ({
+                ...f,
+                senderClientId: Number(e.target.value),
+              }))
             }
           />
         </label>
@@ -77,7 +130,10 @@ export default function CreatePackagePage() {
             type="number"
             value={form.receiverClientId}
             onChange={(e) =>
-              setForm((f) => ({ ...f, receiverClientId: Number(e.target.value) }))
+              setForm((f) => ({
+                ...f,
+                receiverClientId: Number(e.target.value),
+              }))
             }
           />
         </label>
@@ -106,6 +162,7 @@ export default function CreatePackagePage() {
           Deliver to office
         </label>
 
+        {/* ADDRESS INPUT */}
         {!form.toOffice && (
           <label>
             Address to go
@@ -115,6 +172,36 @@ export default function CreatePackagePage() {
                 setForm((f) => ({ ...f, addressToGo: e.target.value }))
               }
             />
+          </label>
+        )}
+
+        {/* OFFICE SELECT */}
+        {form.toOffice && (
+          <label>
+            Office
+            {loadingOffices ? (
+              <p>Loading offices...</p>
+            ) : (
+              <select
+                value={form.officeId ?? ""}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    officeId: Number(e.target.value),
+                  }))
+                }
+                required
+              >
+                <option value="" disabled>
+                  Select office
+                </option>
+                {offices.map((o) => (
+                  <option key={o.idOffice} value={o.idOffice}>
+                    {o.address}
+                  </option>
+                ))}
+              </select>
+            )}
           </label>
         )}
 
