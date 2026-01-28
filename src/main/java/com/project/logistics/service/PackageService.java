@@ -2,6 +2,7 @@ package com.project.logistics.service;
 
 import com.project.logistics.dto.PackageCreateDto;
 import com.project.logistics.dto.PackageDto;
+import com.project.logistics.dto.PackageReportDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,4 +26,7 @@ public interface PackageService {
     PackageDto markDelivered(Integer idPackage);
 
     void delete(Integer idPackage);
+
+    List<PackageReportDto> getReport();
+
 }

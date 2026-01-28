@@ -7,6 +7,7 @@ import com.project.logistics.dto.ClientCreateDto;
 import com.project.logistics.dto.ClientDto;
 import com.project.logistics.data.entity.Client;
 import com.project.logistics.data.repository.ClientRepository;
+import com.project.logistics.dto.ClientReportDto;
 import com.project.logistics.dto.PackageDto;
 import com.project.logistics.service.ClientService;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,10 @@ public class ClientServiceImpl implements ClientService {
                 .idClient(client.getIdClient())
                 .idUser(client.getUser().getIdUser())
                 .build();
+    }
+    @Override
+    public List<ClientReportDto> getReport() {
+        return clientRepository.findAllForReport();
     }
 
 

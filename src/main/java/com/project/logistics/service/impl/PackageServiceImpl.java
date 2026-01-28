@@ -10,6 +10,7 @@ import com.project.logistics.data.entity.PackageStatus;
 import com.project.logistics.data.repository.*;
 import com.project.logistics.dto.PackageCreateDto;
 import com.project.logistics.dto.PackageDto;
+import com.project.logistics.dto.PackageReportDto;
 import com.project.logistics.service.PackageService;
 import com.project.logistics.service.PricingService;
 import lombok.RequiredArgsConstructor;
@@ -164,6 +165,10 @@ public class PackageServiceImpl implements PackageService {
                 .stream()
                 .map(this::mapToDto)
                 .toList();
+    }
+    @Override
+    public List<PackageReportDto> getReport() {
+        return packageRepository.findAllForReport();
     }
 
     private PackageDto mapToDto(com.project.logistics.data.entity.Package pkg) {

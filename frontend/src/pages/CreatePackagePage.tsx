@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "../lib/api";
 import { getAuth } from "../lib/auth";
 import type { PackageDto } from "../types";
@@ -43,11 +43,16 @@ export default function CreatePackagePage({ onCreated, onClose }: Props) {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (toOffice) {
-      api
-        .get<OfficeDto[]>("/offices/by-company?companyId=6")
-        .then((r) => setOffices(r.data));
+    if (!toOffice) {
+      setOffices([]);
+      setOfficeId(null);
+      return;
     }
+
+    api
+      .get<OfficeDto[]>("/offices/by-company?companyId=6")
+      .then((r) => setOffices(r.data))
+      .catch(() => setError("Failed to load offices"));
   }, [toOffice]);
 
   const lookup = async (
@@ -59,38 +64,13 @@ export default function CreatePackagePage({ onCreated, onClose }: Props) {
   ) => {
     if (!phone) return;
 
-    const r = await api.get<ClientByPhoneDto>(
-      `/clients/by-phone?phone=${phone}`
-    );
+    const r = await api.get<ClientByPhoneDto>(`/clients/by-phone?phone=${phone}`);
 
     setFirst(r.data.firstName ?? "");
     setLast(r.data.lastName ?? "");
     setExists(r.data.exists);
     setResolved(true);
   };
-
-
-  useEffect(() => {
-    if (!form.toOffice) {
-      setOffices([]);
-      setForm((f) => ({ ...f, officeId: undefined }));
-      return;
-    }
-
-    const loadOffices = async () => {
-      try {
-        setLoadingOffices(true);
-        const res = await api.get<OfficeDto[]>("/offices");
-        setOffices(res.data);
-      } catch {
-        setError("Failed to load offices");
-      } finally {
-        setLoadingOffices(false);
-      }
-    };
-
-    loadOffices();
-  }, [form.toOffice]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,8 +79,10 @@ export default function CreatePackagePage({ onCreated, onClose }: Props) {
     setSubmitting(true);
     setError("");
 
-    if (form.toOffice && !form.officeId) {
+
+    if (toOffice && !officeId) {
       setError("Please select an office");
+      setSubmitting(false);
       return;
     }
 
@@ -115,9 +97,11 @@ export default function CreatePackagePage({ onCreated, onClose }: Props) {
         senderPhone,
         senderFirstName: senderExists ? null : senderFirst,
         senderLastName: senderExists ? null : senderLast,
+
         receiverPhone,
         receiverFirstName: receiverExists ? null : receiverFirst,
         receiverLastName: receiverExists ? null : receiverLast,
+
         idEmployee: auth.employeeId,
         weight,
         toOffice,
@@ -134,12 +118,13 @@ export default function CreatePackagePage({ onCreated, onClose }: Props) {
     }
   };
 
-
   return (
     <form onSubmit={submit} style={{ display: "grid", gap: 12 }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h3 style={{ margin: 0 }}>New Package</h3>
-        <button type="button" onClick={onClose}>✕</button>
+        <button type="button" onClick={onClose}>
+          ✕
+        </button>
       </div>
 
       <input
@@ -226,7 +211,7 @@ export default function CreatePackagePage({ onCreated, onClose }: Props) {
       {toOffice ? (
         <select
           value={officeId ?? ""}
-          onChange={(e) => setOfficeId(+e.target.value)}
+          onChange={(e) => setOfficeId(Number(e.target.value))}
         >
           <option value="">Select office</option>
           {offices.map((o) => (
@@ -243,9 +228,7 @@ export default function CreatePackagePage({ onCreated, onClose }: Props) {
         />
       )}
 
-      <button disabled={submitting}>
-        {submitting ? "Creating…" : "Create"}
-      </button>
+      <button disabled={submitting}>{submitting ? "Creating…" : "Create"}</button>
 
       {error && <p style={{ color: "crimson" }}>{error}</p>}
     </form>

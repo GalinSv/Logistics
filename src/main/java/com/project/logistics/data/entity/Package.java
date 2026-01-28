@@ -1,6 +1,7 @@
 package com.project.logistics.data.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ public class Package {
     @Column(name = "idPackage")
     private Integer idPackage;
 
+    @Positive
     @Column(name = "weight", nullable = false)
     private Double weight;
 

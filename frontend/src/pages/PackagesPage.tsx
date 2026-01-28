@@ -58,6 +58,11 @@ export default function PackagesPage() {
               border: "1px solid #ddd",
             }}
           />
+          <button
+              onClick={() => (window.location.href = "/employee/reports")}
+            >
+              Reports
+            </button>
 
           {/* REFRESH BUTTON */}
           <button onClick={loadPackages} disabled={loading}>

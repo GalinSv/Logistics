@@ -36,4 +36,38 @@ export type PricingDto = {
   toAddress: number; // <--- важно: pricing endpoint връща toAddress
 };
 
+export type EmployeeReportDto = {
+  employeeId: number;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  officeAddress: string;
+  typeOfEmpl: number;
+};
+
+export type ClientReportDto = {
+  clientId: number;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+};
+
+export type PackageReportDto = {
+  packageId: number;
+
+  senderPhone: string;
+  receiverPhone: string;
+  employeePhone: string;
+
+  weight: number;
+  toOffice: boolean;
+
+  addressToGo: string | null;
+  officeAddress: string | null;
+
+  dateOfDelivery: string | null;
+  status: string;
+};
 

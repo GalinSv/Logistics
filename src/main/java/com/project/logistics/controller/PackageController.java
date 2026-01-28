@@ -1,7 +1,10 @@
 package com.project.logistics.controller;
 
 import com.project.logistics.dto.PackageDto;
+import com.project.logistics.dto.PackageReportDto;
+import com.project.logistics.dto.RevenueDto;
 import com.project.logistics.service.PackageService;
+import com.project.logistics.service.PricingService;
 import lombok.RequiredArgsConstructor;
 import com.project.logistics.dto.PackageCreateDto;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,7 @@ import java.util.List;
 public class PackageController {
 
     private final PackageService packageService;
+    private final PricingService pricingService;
 
     @PostMapping
     public PackageDto create(@RequestBody PackageCreateDto dto) {
@@ -48,5 +52,31 @@ public class PackageController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
         packageService.delete(id);
+    }
+    @GetMapping("/by-employee/{id}")
+    public List<PackageDto> byEmployee(@PathVariable Integer id) {
+        return packageService.getByEmployee(id);
+    }
+
+    @GetMapping("/sent-by-client/{id}")
+    public List<PackageDto> sentByClient(@PathVariable Integer id) {
+        return packageService.getSentByClient(id);
+    }
+
+    @GetMapping("/received-by-client/{id}")
+    public List<PackageDto> receivedByClient(@PathVariable Integer id) {
+        return packageService.getReceivedByClient(id);
+    }
+    @GetMapping("/revenue")
+    public RevenueDto revenue(
+            @RequestParam LocalDate from,
+            @RequestParam LocalDate to
+    ) {
+        return pricingService.getRevenue(from, to);
+    }
+
+    @GetMapping("/report")
+    public List<PackageReportDto> report() {
+        return packageService.getReport();
     }
 }

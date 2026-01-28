@@ -3,10 +3,13 @@ package com.project.logistics.controller;
 import com.project.logistics.dto.ClientByPhoneDto;
 import com.project.logistics.dto.ClientCreateDto;
 import com.project.logistics.dto.ClientDto;
+import com.project.logistics.dto.ClientReportDto;
 import com.project.logistics.service.ClientLookupService;
 import com.project.logistics.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
@@ -34,5 +37,10 @@ public class ClientController {
     @GetMapping("/by-phone")
     public ClientByPhoneDto getByPhone(@RequestParam String phone) {
         return clientLookupService.getByPhone(phone);
+    }
+
+    @GetMapping("/report")
+    public List<ClientReportDto> report() {
+        return clientService.getReport();
     }
 }

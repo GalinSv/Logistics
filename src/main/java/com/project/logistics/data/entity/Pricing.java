@@ -1,6 +1,7 @@
 package com.project.logistics.data.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.util.List;
@@ -20,10 +21,12 @@ public class Pricing {
     private Integer idTransactions;
 
 
-    @Column(name = "pricePerKilogram")
+    @Positive(message = "pricePerKilogram must be positive")
+    @Column(name = "pricePerKilogram", nullable = false)
     private Double pricePerKilogram;
 
-    @Column(name = "price")
+    @Positive(message = "price must be positive")
+    @Column(name = "price", nullable = false)
     private Double price;
 
     @OneToOne(mappedBy = "pricing")

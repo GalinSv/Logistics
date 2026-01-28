@@ -7,6 +7,7 @@ import com.project.logistics.data.repository.*;
 import com.project.logistics.dto.EmployeeCreateDto;
 import com.project.logistics.dto.EmployeeDto;
 import com.project.logistics.data.entity.Employee;
+import com.project.logistics.dto.EmployeeReportDto;
 import com.project.logistics.dto.PackageDto;
 import com.project.logistics.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .idOffice(employee.getOffice().getIdOffice())
                 .typeOfEmpl(employee.getTypeOfEmpl())
                 .build();
+    }
+
+    @Override
+    public List<EmployeeReportDto> getReport() {
+        return employeeRepository.findAllForReport();
     }
 
 
