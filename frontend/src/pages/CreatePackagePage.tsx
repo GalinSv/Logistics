@@ -69,12 +69,40 @@ export default function CreatePackagePage({ onCreated, onClose }: Props) {
     setResolved(true);
   };
 
+
+  useEffect(() => {
+    if (!form.toOffice) {
+      setOffices([]);
+      setForm((f) => ({ ...f, officeId: undefined }));
+      return;
+    }
+
+    const loadOffices = async () => {
+      try {
+        setLoadingOffices(true);
+        const res = await api.get<OfficeDto[]>("/offices");
+        setOffices(res.data);
+      } catch {
+        setError("Failed to load offices");
+      } finally {
+        setLoadingOffices(false);
+      }
+    };
+
+    loadOffices();
+  }, [form.toOffice]);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (submitting) return;
 
     setSubmitting(true);
     setError("");
+
+    if (form.toOffice && !form.officeId) {
+      setError("Please select an office");
+      return;
+    }
 
     try {
       const auth = getAuth();
@@ -105,6 +133,7 @@ export default function CreatePackagePage({ onCreated, onClose }: Props) {
       setSubmitting(false);
     }
   };
+
 
   return (
     <form onSubmit={submit} style={{ display: "grid", gap: 12 }}>
