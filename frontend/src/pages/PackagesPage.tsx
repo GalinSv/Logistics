@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../lib/api";
-import type { PackageDto } from "../types";
+import type { PackageReportDto } from "../types";
 import CreatePackagePage from "./CreatePackagePage";
 
 export default function PackagesPage() {
-  const [items, setItems] = useState<PackageDto[]>([]);
+  const [items, setItems] = useState<PackageReportDto[]>([]);
   const [query, setQuery] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -12,7 +12,7 @@ export default function PackagesPage() {
   const loadPackages = async () => {
     setLoading(true);
     try {
-      const res = await api.get<PackageDto[]>("/packages");
+      const res = await api.get<PackageReportDto[]>("/packages/report");
       setItems(res.data);
     } finally {
       setLoading(false);
@@ -30,9 +30,6 @@ export default function PackagesPage() {
       JSON.stringify(p).toLowerCase().includes(q)
     );
   }, [items, query]);
-
-  const status = (p: PackageDto) =>
-    p.dateOfDelivery ? "DELIVERED" : "CREATED";
 
   return (
     <div>
@@ -58,18 +55,15 @@ export default function PackagesPage() {
               border: "1px solid #ddd",
             }}
           />
-          <button
-              onClick={() => (window.location.href = "/employee/reports")}
-            >
-              Reports
-            </button>
 
-          {/* REFRESH BUTTON */}
+          <button onClick={() => (window.location.href = "/employee/reports")}>
+            Reports
+          </button>
+
           <button onClick={loadPackages} disabled={loading}>
             {loading ? "Refreshing…" : "Refresh"}
           </button>
 
-          {/* LOGOUT */}
           <button
             onClick={() => {
               localStorage.clear();
@@ -139,10 +133,10 @@ export default function PackagesPage() {
             </div>
 
             {[...filtered]
-              .sort((a, b) => b.idPackage - a.idPackage)
+              .sort((a, b) => b.packageId - a.packageId)
               .map((p) => (
                 <div
-                  key={p.idPackage}
+                  key={p.packageId}
                   style={{
                     background: "white",
                     borderRadius: 16,
@@ -157,23 +151,23 @@ export default function PackagesPage() {
                       marginBottom: 8,
                     }}
                   >
-                    <strong>Package #{p.idPackage}</strong>
+                    <strong>Package #{p.packageId}</strong>
                     <span
                       style={{
                         padding: "4px 10px",
                         borderRadius: 999,
                         fontSize: 12,
                         background:
-                          status(p) === "DELIVERED"
+                          p.status === "DELIVERED"
                             ? "#e8f7ee"
                             : "#fff3e0",
                         color:
-                          status(p) === "DELIVERED"
+                          p.status === "DELIVERED"
                             ? "#1b8f4c"
                             : "#c77700",
                       }}
                     >
-                      {status(p)}
+                      {p.status}
                     </span>
                   </div>
 
@@ -185,10 +179,12 @@ export default function PackagesPage() {
 
                   <div style={{ fontSize: 14, display: "grid", gap: 4 }}>
                     <div>Weight: {p.weight} kg</div>
-                    <div>Price: {p.price?.toFixed(2)} лв</div>
-                    <div>Sender: Client #{p.idSenderClient}</div>
-                    <div>Receiver: Client #{p.idReceiverClient}</div>
-                    <div>Employee: #{p.idEmployee}</div>
+                    <div>Price: {p.price.toFixed(2)} €</div>
+
+                    <div>Sender: {p.senderPhone}</div>
+                    <div>Receiver: {p.receiverPhone}</div>
+
+                    <div>Employee phone: {p.employeePhone}</div>
                     <div>Delivered: {p.dateOfDelivery ?? "-"}</div>
                   </div>
                 </div>
