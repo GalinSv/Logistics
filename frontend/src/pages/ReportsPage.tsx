@@ -58,7 +58,8 @@ function PackageTable({ data }: { data: PackageReportDto[] }) {
           <th>Sender phone</th>
           <th>Receiver phone</th>
           <th>Employee phone</th>
-          <th>Weight</th>
+          <th>Weight (kg)</th>
+          <th>Price (€)</th>
           <th>Delivery type</th>
           <th>Address / Office</th>
           <th>Delivered</th>
@@ -73,6 +74,7 @@ function PackageTable({ data }: { data: PackageReportDto[] }) {
             <td>{p.receiverPhone}</td>
             <td>{p.employeePhone}</td>
             <td>{p.weight}</td>
+            <td>{p.price.toFixed(2)}</td> 
             <td>{p.toOffice ? "Office" : "Address"}</td>
             <td>{p.toOffice ? p.officeAddress : p.addressToGo}</td>
             <td>{p.dateOfDelivery ?? "-"}</td>

@@ -21,7 +21,6 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
-    private final PackageRepository packageRepository;
 
     @Override
     public ClientDto create(ClientCreateDto dto) {

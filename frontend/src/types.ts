@@ -61,13 +61,13 @@ export type PackageReportDto = {
   receiverPhone: string;
   employeePhone: string;
 
-  weight: number;
-  toOffice: boolean;
+  weight: number;   
+  price: number;    
 
+  toOffice: boolean;
   addressToGo: string | null;
   officeAddress: string | null;
 
   dateOfDelivery: string | null;
-  status: string;
+  status: "CREATED" | "IN_TRANSIT" | "AT_OFFICE" | "DELIVERED" | "CANCELLED";
 };
-

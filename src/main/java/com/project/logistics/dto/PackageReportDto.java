@@ -19,6 +19,8 @@ public class PackageReportDto {
     private String employeePhone;
 
     private Double weight;
+    private Double price;
+
     private Boolean toOffice;
 
     private String addressToGo;
