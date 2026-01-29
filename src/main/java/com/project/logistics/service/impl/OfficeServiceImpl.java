@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -21,17 +24,34 @@ public class OfficeServiceImpl implements OfficeService {
 
     @Override
     public OfficeDto create(OfficeCreateDto dto) {
-        Company company = companyRepository.findById(dto.getIdCompany())
-                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        if (dto.getAddress() == null || dto.getAddress().trim().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Address is required"
+            );
+        }
+
+        Company company = companyRepository.findById(6)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Company not found"
+                ));
 
         Office office = Office.builder()
                 .address(dto.getAddress())
-                .company(company)
+                .company(company)   // ✅ ВИНАГИ фирма 6
                 .build();
 
-        Office saved = officeRepository.save(office);
-        return mapToDto(saved);
+        officeRepository.save(office);
+
+        return OfficeDto.builder()
+                .idOffice(office.getIdOffice())
+                .address(office.getAddress())
+                .idCompany(company.getIdCompany())
+                .build();
     }
+
 
     @Override
     public OfficeDto getById(Integer idOffice) {

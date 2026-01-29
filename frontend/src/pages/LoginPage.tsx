@@ -111,6 +111,19 @@ export default function LoginPage() {
             {loading ? "Signing in…" : "Login"}
           </button>
 
+          <button
+            type="button"
+            onClick={() => nav("/register")}
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "#5b6cff",
+              cursor: "pointer",
+            }}
+          >
+            Register as client
+          </button>
+
           {err && <div style={{ color: "crimson" }}>{err}</div>}
         </form>
       </div>

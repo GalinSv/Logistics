@@ -9,6 +9,7 @@ type PackageDto = {
   idEmployee: number;
   weight: number;
   addressToGo: string | null;
+  officeAddress?: string | null;
   toOffice: boolean;
   dateOfDelivery: string | null;
   price: number | null;
@@ -41,16 +42,15 @@ export default function ClientDashboardPage() {
 
         const data: PackageDto[] = await res.json();
 
-        const mine = data.filter(
-          (p) =>
-            p.idSenderClient === clientId ||
-            p.idReceiverClient === clientId
-        );
+        const mine = data
+          .filter(
+            (p) =>
+              p.idSenderClient === clientId ||
+              p.idReceiverClient === clientId
+          )
+          .sort((a, b) => b.idPackage - a.idPackage);
 
-        if (!cancelled) {
-          // newest first
-          setItems(mine.sort((a, b) => b.idPackage - a.idPackage));
-        }
+        if (!cancelled) setItems(mine);
       } catch (e: any) {
         if (!cancelled) setErr(e?.message ?? "Error loading packages");
       } finally {
@@ -102,10 +102,11 @@ export default function ClientDashboardPage() {
                     </span>
                   </div>
 
+                  {/* 📍 ADDRESS / OFFICE */}
                   <div className="card-address">
                     {p.toOffice
-                      ? "Delivered to office"
-                      : p.addressToGo ?? "-"}
+                      ? `To office: ${p.officeAddress ?? "-"}`
+                      : `Address: ${p.addressToGo ?? "-"}`}
                   </div>
 
                   <div className="card-grid">
