@@ -10,7 +10,6 @@ import type {
   ClientReportDto,
 } from "../types";
 
-/* ===== lookup DTOs ===== */
 type ClientByPhoneDto = {
   exists: boolean;
   clientId: number | null;
@@ -27,7 +26,6 @@ type EmployeeByPhoneDto = {
   lastName: string;
 };
 
-/* ===== collapsible section ===== */
 function Section({
   title,
   children,
@@ -48,7 +46,7 @@ function Section({
     </div>
   );
 }
-/* ===== unified PACKAGE table ===== */
+
 function PackageTable({ data }: { data: PackageReportDto[] }) {
   return (
     <table className="report-table">
@@ -94,7 +92,6 @@ export default function ReportsPage() {
     return <Navigate to="/" replace />;
   }
 
-  /* ===== data ===== */
   const [packages, setPackages] = useState<PackageReportDto[]>([]);
   const [employees, setEmployees] = useState<EmployeeReportDto[]>([]);
   const [clients, setClients] = useState<ClientReportDto[]>([]);
@@ -114,7 +111,6 @@ export default function ReportsPage() {
     api.get("/clients/report").then((r) => setClients(r.data));
   }, []);
 
-  /* ===== filters ===== */
   const byEmployee = useMemo(() => {
     if (!employeeLookup?.exists) return [];
     return packages.filter(
@@ -142,7 +138,7 @@ export default function ReportsPage() {
     );
   }, [packages, clientLookup]);
 
-  /* ===== lookups ===== */
+  
   const lookupClient = async () => {
     const r = await api.get<ClientByPhoneDto>(
       `/clients/by-phone?phone=${phone}`
@@ -173,7 +169,6 @@ export default function ReportsPage() {
         <button onClick={() => nav("/employee")}>← Back to Packages</button>
       </div>
 
-      {/* a */}
       <Section title="All employees">
         <table className="report-table">
         <thead>
@@ -200,7 +195,6 @@ export default function ReportsPage() {
 
       </Section>
 
-      {/* b */}
       <Section title="All clients">
         <table className="report-table">
           <thead>
@@ -224,19 +218,17 @@ export default function ReportsPage() {
         </table>
       </Section>
 
-      {/* c */}
       <Section title="All packages">
         <PackageTable data={packages} />
       </Section>
 
 
-      {/* e */}
       <Section title="Sent but not delivered packages">
         <PackageTable data={undelivered} />
       </Section>
 
 
-      <Section title="Search by phone (d / f / g)">
+      <Section title="Search by phone">
           <div className="search-box">
             <input
               placeholder="Phone number"
@@ -250,7 +242,6 @@ export default function ReportsPage() {
           </div>
         </Section>
 
-        {/* d */}
       {employeeLookup?.exists && (
         <Section title="Packages registered by employee">
           <PackageTable data={byEmployee} />
@@ -258,21 +249,18 @@ export default function ReportsPage() {
       )}
 
       
-      {/* f */}
       {clientLookup?.exists && (
         <Section title="Packages sent by client">
           <PackageTable data={sentByClient} />
         </Section>
       )}
 
-      {/* g */}
       {clientLookup?.exists && (
         <Section title="Packages received by client">
           <PackageTable data={receivedByClient} />
         </Section>
       )}
 
-      {/* h */}
       <Section title="Company revenue for period">
         <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
         <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />

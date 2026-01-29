@@ -33,7 +33,6 @@ export default function PackagesPage() {
 
   return (
     <div>
-      {/* HEADER */}
       <div
         style={{
           display: "flex",
@@ -74,8 +73,6 @@ export default function PackagesPage() {
           </button>
         </div>
       </div>
-
-      {/* MAIN LAYOUT */}
       <div
         style={{
           display: "grid",
@@ -84,7 +81,7 @@ export default function PackagesPage() {
           alignItems: "start",
         }}
       >
-        {/* LEFT – CREATE FORM */}
+
         {showCreate && (
           <div
             style={{
@@ -101,7 +98,6 @@ export default function PackagesPage() {
           </div>
         )}
 
-        {/* RIGHT – PACKAGES */}
         <div>
           <div
             style={{
@@ -110,7 +106,7 @@ export default function PackagesPage() {
               gap: 20,
             }}
           >
-            {/* NEW PACKAGE CARD */}
+
             <div
               onClick={() => setShowCreate(true)}
               style={{
